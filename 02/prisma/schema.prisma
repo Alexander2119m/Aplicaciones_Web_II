@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model Pedido {
+  idpedido       Int           @id @default(autoincrement())
+  CI             String
+  id_repartidor  Int
+  Fecha          DateTime
+  Total          Float
+  entregado      Boolean
+  direccion_envio String
+  repartidor     Repartidor    @relation(fields: [id_repartidor], references: [id_repartidor]) 
+  detalles       DetallePedido[]
+}
+
+model DetallePedido {
+  iddetalle   Int      @id @default(autoincrement())
+  idpedido    Int
+  idproducto  Int
+  Cantidad    Int
+  Precio      Float
+  Subtotal    Float
+  Costo_envio Float
+  pedido      Pedido   @relation(fields: [idpedido], references: [idpedido]) // Relación muchos a uno con Pedido
+}
+
+model Repartidor {
+  id_repartidor  Int      @id @default(autoincrement())
+  Nombre         String
+  Telefono       String
+  Correo         String
+  Cedula         String
+  pedidos        Pedido[] 
+}
